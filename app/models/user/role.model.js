@@ -1,13 +1,18 @@
 const { Model, DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-  class Example extends Model {
+  class Role extends Model {
     static associate(models) {
-      // define association here
+      // BelongsToMany Relationship
+      this.belongsToMany(models.User, {
+        through: models.UserRole,
+        foreignKey: 'role_id',
+        otherKey: 'user_id'
+      })
     }
   }
 
-  Example.init(
+  Role.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -17,7 +22,22 @@ module.exports = (sequelize) => {
       },
       name: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: false,
+        unique: {
+          msg: 'Role name already exists'
+        },
+        validate: {
+          notNull: {
+            msg: 'Role name is required'
+          },
+          notEmpty: {
+            msg: 'Role name is required'
+          },
+          len: {
+            args: [3, 50],
+            msg: 'Role name must be between 3 and 50 characters'
+          }
+        }
       },
       created_at: {
         type: DataTypes.DATE,
@@ -32,13 +52,13 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'Example',
-      tableName: 'example',
+      modelName: 'Role',
+      tableName: 'roles',
       timestamps: true,
       createdAt: 'created_at',
       updatedAt: 'updated_at'
     }
   )
 
-  return Example
+  return Role
 }
