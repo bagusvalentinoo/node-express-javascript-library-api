@@ -4,6 +4,11 @@ const { throwNewError } = require('../../utils/response.util')
 module.exports = (sequelize) => {
   class User extends Model {
     static associate(models) {
+      // HasOne Relationship
+      this.hasOne(models.UserProfile, {
+        foreignKey: 'user_id'
+      })
+
       // BelongsToMany Relationship
       this.belongsToMany(models.Role, {
         through: models.UserRole,
