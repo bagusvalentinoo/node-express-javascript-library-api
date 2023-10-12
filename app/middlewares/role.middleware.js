@@ -1,0 +1,29 @@
+const response = require('../utils/response.util')
+const { User } = require('../models/index')
+
+const checkUserRole = (role) => async (req, res, next) => {
+  try {
+    const { user_id } = req
+
+    if (user_id === undefined) response.throwNewError(403, `Oops! Require ${role} role`)
+
+    const user = await User.findByPk(user_id)
+
+    if (!user) response.throwNewError(403, `Oops! Require ${role} role`)
+
+    const roles = await user.getRoles()
+    const hasRole = roles.some((userRole) => userRole.name === role)
+
+    if (!hasRole) response.throwNewError(403, `Oops! Require ${role} role`)
+
+    next()
+  } catch (error) {
+    return response.failed(res, error.status_code ?? 500, error)
+  }
+}
+
+module.exports = {
+  isAdmin: checkUserRole('Admin'),
+  isOfficer: checkUserRole('Officer'),
+  isMember: checkUserRole('Member')
+}
