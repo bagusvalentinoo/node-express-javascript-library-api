@@ -3,12 +3,13 @@ const cors = require('cors')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const path = require('path')
 const model = require('./app/models/index')
 const { seed } = require('./app/seeders/seed')
 const apiRoute = require('./app/routes/api/api.route')
 require('dotenv').config()
 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 
 morgan.token('body', (req, res) => {
   return JSON.stringify(req.body)

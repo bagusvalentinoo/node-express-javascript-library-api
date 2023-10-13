@@ -40,7 +40,7 @@ const pagination = (page, size) => {
   return { limit, offset }
 }
 
-const paginationResponse = (model, page, limit, dataKey, resource) => {
+const paginate = (model, page, limit, dataKey, resource) => {
   return {
     [dataKey]: resource,
     pagination: {
@@ -57,5 +57,5 @@ module.exports = {
   throwNewError,
   failed,
   pagination,
-  paginationResponse
+  paginate
 }

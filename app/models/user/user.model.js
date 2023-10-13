@@ -9,6 +9,17 @@ module.exports = (sequelize) => {
         foreignKey: 'user_id'
       })
 
+      // HasMany Relationships
+      this.hasMany(models.Genre, {
+        foreignKey: 'created_by',
+        as: 'createdGenres'
+      })
+
+      this.hasMany(models.Genre, {
+        foreignKey: 'updated_by',
+        as: 'updatedGenres'
+      })
+
       // BelongsToMany Relationship
       this.belongsToMany(models.Role, {
         through: models.UserRole,

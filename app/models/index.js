@@ -16,6 +16,7 @@ if (config.use_env_variable) {
 
 const modelFolders = [
   'user',
+  'product',
   'other'
 ]
 
