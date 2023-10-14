@@ -89,11 +89,15 @@ const updateGenre = async (req, genre, t) => {
 }
 
 const deleteGenres = async (ids, t) => {
-  return await Genre.destroy({
+  const deletedGenres = await Genre.destroy({
     where: {
       id: ids
     }
   }, { transaction: t })
+
+  if (!deletedGenres) response.throwNewError(400, 'Oops! Genre not found')
+
+  return deletedGenres
 }
 
 module.exports = {
