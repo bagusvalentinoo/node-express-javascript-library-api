@@ -33,6 +33,7 @@ const uploadFile = (folderName, fieldName) => async (req, res, next) => {
 
     upload(req, res, (error) => {
       if (error) return response.failed(res, 400, error)
+      if (!req.file) return response.failed(res, 400, `Oops! You forgot to upload the ${fieldName}`)
 
       next()
     })

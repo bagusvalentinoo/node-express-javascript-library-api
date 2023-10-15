@@ -22,7 +22,7 @@ const throwNewError = (status_code, message) => {
 const failed = (res, status_code, error) => {
   const responsePayload = {
     status_code: status_code,
-    message: error.message
+    message: error.message ?? error
   }
 
   if (error instanceof ValidationError) {

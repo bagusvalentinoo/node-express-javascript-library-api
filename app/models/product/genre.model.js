@@ -52,6 +52,7 @@ module.exports = (sequelize) => {
       description: {
         type: DataTypes.STRING(100),
         allowNull: true,
+        defaultValue: null,
         validate: {
           len: {
             args: [10, 100],
