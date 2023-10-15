@@ -1,0 +1,222 @@
+const response = require('../../../../utils/response.util')
+const { orderBy } = require('../../../../utils/query.util')
+const BookResource = require('../resources/book.resource')
+const { Sequelize, sequelize, Op, Book, Genre, BookGenre } = require('../../../../models/index')
+
+const getBooks = async (req) => {
+  const sortBy = orderBy(req.query)
+  const { search } = req.query
+  const { limit, offset } = response.pagination(req.query.page, req.query.limit)
+
+  const responsePayloadBook = {
+    limit: limit,
+    offset: offset,
+    order: sortBy,
+    include: {
+      model: Genre,
+      through: { attributes: [] },
+      attributes: ['id', 'name']
+    },
+    distinct: true
+  }
+
+  if (search) {
+    responsePayloadBook.where = {
+      [Op.or]: [
+        {
+          title: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          author: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          publisher: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          isbn: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        {
+          publication_year: {
+            [Op.like]: `%${search}%`
+          }
+        },
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('Book.publication_year'), 'varchar'),
+          { [Op.like]: `%${search}%` }
+        ),
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('Book.number_of_pages'), 'varchar'),
+          { [Op.like]: `%${search}%` }
+        )
+      ]
+    }
+  }
+
+  const books = await Book.findAndCountAll(responsePayloadBook)
+
+  return response.paginate(
+    books,
+    req.query.page,
+    limit,
+    'books',
+    BookResource.collection(books.rows, 1)
+  )
+}
+
+const createBook = async (req, t) => {
+  const {
+    title,
+    author,
+    publisher,
+    isbn,
+    publication_year,
+    publication_date,
+    number_of_pages,
+    synopsis,
+    genres,
+    genre_names
+  } = req.body
+
+  const book = await Book.create({
+    title: title,
+    author: author,
+    publisher: publisher,
+    isbn: isbn,
+    publication_year: parseInt(publication_year),
+    publication_date: publication_date,
+    number_of_pages: parseInt(number_of_pages),
+    synopsis: synopsis,
+    cover_url: req.file.publicUrl ?? null,
+    created_at: new Date(),
+    updated_at: new Date(),
+    created_by: req.user_id,
+    updated_by: req.user_id
+  }, { transaction: t })
+
+  if (genres) await book.setGenres(genres, { transaction: t })
+  if (genre_names) {
+    for (const genreName of genre_names) {
+      const genre = await Genre.findOrCreate({
+        where: {
+          name: genreName
+        }
+      })
+
+      await book.addGenre(genre[0].id, { transaction: t })
+    }
+  }
+
+  return book
+}
+
+const findBookById = async (id) => {
+  const book = await Book.findByPk(id, {
+    include: {
+      model: Genre,
+      through: { attributes: [] },
+      attributes: ['id', 'name']
+    }
+  })
+
+  if (!book) response.throwNewError(400, 'Oops! Book not found')
+
+  return book
+}
+
+const updateBook = async (req, book, t) => {
+  const {
+    title,
+    author,
+    publisher,
+    isbn,
+    publication_year,
+    publication_date,
+    number_of_pages,
+    synopsis,
+    genres,
+    genre_names
+  } = req.body
+
+  const bookUpdated = await book.update({
+    title: title,
+    author: author,
+    publisher: publisher,
+    isbn: isbn,
+    publication_year: parseInt(publication_year),
+    publication_date: publication_date,
+    number_of_pages: parseInt(number_of_pages),
+    synopsis: synopsis,
+    created_at: new Date(),
+    updated_at: new Date(),
+    created_by: req.user_id,
+    updated_by: req.user_id
+  })
+
+  if (req.file) {
+    bookUpdated.cover_url = req.file.publicUrl
+    await book.save({ transaction: t })
+  }
+
+  if (genres) await bookUpdated.setGenres(genres, { transaction: t })
+  if (genre_names) {
+    const genreIds = []
+
+    for (const genreName of genre_names) {
+      const genre = await Genre.findOrCreate({
+        where: {
+          name: genreName
+        }
+      })
+
+      genreIds.push(genre[0].id)
+    }
+
+    await bookUpdated.setGenres(genreIds, { transaction: t })
+  }
+
+  return bookUpdated
+}
+
+const deleteBooks = async (ids, t) => {
+  const books = await Book.findAll({
+    where: {
+      id: {
+        [Op.in]: ids
+      }
+    }
+  })
+
+  if (books.length === 0) response.throwNewError(400, 'Oops! Books not found')
+
+  for (const book of books) {
+    await BookGenre.destroy({
+      where: {
+        book_id: book.id
+      }
+    }, { transaction: t })
+  }
+
+  return await Book.destroy({
+    where: {
+      id: {
+        [Op.in]: ids
+      }
+    }
+  }, { transaction: t })
+}
+
+module.exports = {
+  getBooks,
+  createBook,
+  findBookById,
+  updateBook,
+  deleteBooks
+}

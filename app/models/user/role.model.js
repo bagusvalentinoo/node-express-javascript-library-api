@@ -24,18 +24,18 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: {
-          msg: 'Role name already exists'
+          msg: 'Oops! Role name already exist'
         },
         validate: {
           notNull: {
-            msg: 'Role name is required'
+            msg: 'Oops! Role cannot be empty'
           },
           notEmpty: {
-            msg: 'Role name is required'
+            msg: 'Oops! Role cannot be empty'
           },
           len: {
             args: [3, 50],
-            msg: 'Role name must be between 3 and 50 characters'
+            msg: 'Oops! Role length between 3 or 50 characters'
           }
         }
       },

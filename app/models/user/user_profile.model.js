@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
         validate: {
           isIn: {
             args: [['Male', 'Female']],
-            msg: 'Gender must be either Male or Female'
+            msg: 'Oops! Gender must be either Male or Female'
           }
         }
       },
@@ -55,7 +55,7 @@ module.exports = (sequelize) => {
         allowNull: true,
         validate: {
           isUrl: {
-            msg: 'Avatar must be a valid URL'
+            msg: 'Oops! Avatar must be a valid URL'
           }
         }
       },

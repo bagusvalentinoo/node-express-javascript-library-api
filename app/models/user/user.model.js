@@ -20,6 +20,16 @@ module.exports = (sequelize) => {
         as: 'updatedGenres'
       })
 
+      this.hasMany(models.Book, {
+        foreignKey: 'created_by',
+        as: 'createdBooks'
+      })
+
+      this.hasMany(models.Book, {
+        foreignKey: 'updated_by',
+        as: 'updatedBooks'
+      })
+
       // BelongsToMany Relationship
       this.belongsToMany(models.Role, {
         through: models.UserRole,
@@ -56,10 +66,10 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'Name is required'
+            msg: 'Oops! Name cannot be empty'
           },
           notEmpty: {
-            msg: 'Name is required'
+            msg: 'Oops! Name cannot be empty'
           }
         }
       },
@@ -67,18 +77,18 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: {
-          msg: 'Username already exists'
+          msg: 'Oops! Username already exists'
         },
         validate: {
           notNull: {
-            msg: 'Username is required'
+            msg: 'Oops! Username cannot be empty'
           },
           notEmpty: {
-            msg: 'Username is required'
+            msg: 'Oops! Username cannot be empty'
           },
           len: {
             args: [6, 50],
-            msg: 'Username must be between 6 and 50 characters'
+            msg: 'Oops! Username length between 6 or 50 characters'
           }
         }
       },
@@ -86,17 +96,17 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(100),
         allowNull: false,
         unique: {
-          msg: 'Email already exists'
+          msg: 'Oops! Email already exists'
         },
         validate: {
           notNull: {
-            msg: 'Email is required'
+            msg: 'Oops! Email cannot be empty'
           },
           notEmpty: {
-            msg: 'Email is required'
+            msg: 'Oops! Email cannot be empty'
           },
           isEmail: {
-            msg: 'Email is invalid'
+            msg: 'Oops! Email is not valid'
           }
         }
       },
@@ -105,14 +115,14 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'Password is required'
+            msg: 'Oops! Password cannot be empty'
           },
           notEmpty: {
-            msg: 'Password is required'
+            msg: 'Oops! Password cannot be empty'
           },
           len: {
             args: [6, 100],
-            msg: 'Password must be between 6 and 100 characters'
+            msg: 'Oops! Password length between 6 or 100 characters'
           }
         }
       },

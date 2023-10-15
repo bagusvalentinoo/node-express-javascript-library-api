@@ -13,6 +13,13 @@ module.exports = (sequelize) => {
         foreignKey: 'updated_by',
         as: 'updatedBy'
       })
+
+      // BelongsToMany Relationship
+      this.belongsToMany(models.Book, {
+        through: models.BookGenre,
+        foreignKey: 'genre_id',
+        otherKey: 'book_id'
+      })
     }
   }
 
@@ -29,34 +36,26 @@ module.exports = (sequelize) => {
         allowNull: false,
         unique: {
           args: true,
-          msg: 'Genre name already exists'
+          msg: 'Oops! Genre name already exist'
         },
         validate: {
           notNull: {
             args: true,
-            msg: 'Genre name is required'
+            msg: 'Oops! Genre name cannot be empty'
           },
           notEmpty: {
             args: true,
-            msg: 'Genre name is required'
+            msg: 'Oops! Genre name cannot be empty'
           }
         }
       },
       description: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
         validate: {
-          notNull: {
-            args: true,
-            msg: 'Genre description is required'
-          },
-          notEmpty: {
-            args: true,
-            msg: 'Genre description is required'
-          },
           len: {
             args: [10, 100],
-            msg: 'Genre description must be between 10 and 100 characters'
+            msg: 'Oops! Genre description length between 10 or 100 characters'
           }
         }
       },
@@ -67,15 +66,15 @@ module.exports = (sequelize) => {
         validate: {
           notNull: {
             args: true,
-            msg: 'Genre status is required'
+            msg: 'Oops! Genre status is required'
           },
           notEmpty: {
             args: true,
-            msg: 'Genre status is required'
+            msg: 'Oops! Genre status is required'
           },
           isIn: {
             args: [['ACTIVE', 'INACTIVE']],
-            msg: 'Genre status must be ACTIVE or INACTIVE'
+            msg: 'Oops! Genre status must be ACTIVE or INACTIVE'
           }
         }
       },
@@ -85,7 +84,7 @@ module.exports = (sequelize) => {
         validate: {
           isUrl: {
             args: true,
-            msg: 'Genre icon url must be a valid url'
+            msg: 'Oops! Genre icon url is invalid'
           }
         }
       },

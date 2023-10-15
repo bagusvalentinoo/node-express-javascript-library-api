@@ -91,7 +91,9 @@ const updateGenre = async (req, genre, t) => {
 const deleteGenres = async (ids, t) => {
   const deletedGenres = await Genre.destroy({
     where: {
-      id: ids
+      id: {
+        [Op.in]: ids
+      }
     }
   }, { transaction: t })
 
