@@ -125,9 +125,7 @@ const findBookById = async (id) => {
     }
   })
 
-  if (!book) response.throwNewError(400, 'Oops! Book not found')
-
-  return book
+  return book ? book : response.throwNewError(400, 'Oops! Book not found')
 }
 
 const updateBook = async (req, book, t) => {

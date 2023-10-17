@@ -3,9 +3,10 @@ const { orderBy } = require('../../../../utils/query.util')
 const { Sequelize, Op, Genre, BookGenre } = require('../../../../models/index')
 
 const getGenres = async (req) => {
-  const sortBy = orderBy(req.query)
-  const { search } = req.query
-  const { limit, offset } = response.pagination(req.query.page, req.query.limit)
+  const query = req.query
+  const sortBy = orderBy(query)
+  const { search } = query
+  const { limit, offset } = response.pagination(query.page, query.limit)
 
   const responsePayloadGenre = {
     limit: limit,
@@ -52,19 +53,9 @@ const getGenres = async (req) => {
 
   const genres = await Genre.findAndCountAll(responsePayloadGenre)
 
-  if (req.query.sort_by === 'book_count') {
-    genres.rows.sort((a, b) => {
-      if (req.query.sort_dir === 'asc') {
-        return a.book_count - b.book_count
-      }
-
-      return b.book_count - a.book_count
-    })
-  }
-
   return response.paginate(
     genres,
-    req.query.page,
+    query.page,
     limit,
     'genres',
     genres.rows
@@ -90,9 +81,7 @@ const createGenre = async (req, t) => {
 const findGenreById = async (id) => {
   const genre = await Genre.findByPk(id)
 
-  if (!genre) response.throwNewError(400, 'Oops! Genre not found')
-
-  return genre
+  return genre ? genre : response.throwNewError(400, 'Oops! Genre not found')
 }
 
 const updateGenre = async (req, genre, t) => {
