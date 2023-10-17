@@ -42,14 +42,25 @@ const getGenres = async (req) => {
             [Op.like]: `%${search}%`
           }
         },
-        {
-          status: search
-        }
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('Genre.status'), 'varchar'),
+          { [Op.like]: `%${search}%` }
+        ),
       ]
     }
   }
 
   const genres = await Genre.findAndCountAll(responsePayloadGenre)
+
+  if (req.query.sort_by === 'book_count') {
+    genres.rows.sort((a, b) => {
+      if (req.query.sort_dir === 'asc') {
+        return a.book_count - b.book_count
+      }
+
+      return b.book_count - a.book_count
+    })
+  }
 
   return response.paginate(
     genres,
@@ -89,13 +100,12 @@ const updateGenre = async (req, genre, t) => {
   const { user_id, file } = req
 
   const genreUpdated = await genre.update({
-    name: name,
-    description: description,
-    status: status,
-    created_at: new Date(),
+    name: name || genre.name,
+    description: description || genre.description,
+    status: status || genre.status,
     updated_at: new Date(),
-    created_by: user_id,
-    updated_by: user_id
+    created_by: user_id || genre.created_by,
+    updated_by: user_id || genre.updated_by
   }, { transaction: t })
 
   if (file) {

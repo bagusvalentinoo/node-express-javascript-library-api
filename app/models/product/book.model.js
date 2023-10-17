@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
         primaryKey: true
       },
       title: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(255),
         allowNull: false,
         unique: {
           args: true,
@@ -48,8 +48,8 @@ module.exports = (sequelize) => {
             msg: 'Oops! Title cannot be empty'
           },
           len: {
-            args: [3, 50],
-            msg: 'Oops! Title length between 3 or 50 characters'
+            args: [1, 255],
+            msg: 'Oops! Title length between 1 or 255 characters'
           }
         }
       },
@@ -166,8 +166,8 @@ module.exports = (sequelize) => {
             msg: 'Oops! Synopsis cannot be empty'
           },
           len: {
-            args: [10, 500],
-            msg: 'Oops! Synopsis length between 10 or 500 characters'
+            args: [10, 1500],
+            msg: 'Oops! Synopsis length between 10 or 1500 characters'
           }
         }
       },

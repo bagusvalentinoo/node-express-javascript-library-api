@@ -1,7 +1,7 @@
 const response = require('../../../../utils/response.util')
 const { orderBy } = require('../../../../utils/query.util')
 const BookResource = require('../resources/book.resource')
-const { Sequelize, sequelize, Op, Book, Genre, BookGenre } = require('../../../../models/index')
+const { Sequelize, Op, Book, Genre, BookGenre } = require('../../../../models/index')
 
 const getBooks = async (req) => {
   const sortBy = orderBy(req.query)
@@ -43,11 +43,10 @@ const getBooks = async (req) => {
             [Op.like]: `%${search}%`
           }
         },
-        {
-          publication_year: {
-            [Op.like]: `%${search}%`
-          }
-        },
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('Book.publication_date'), 'varchar'),
+          { [Op.like]: `%${search}%` }
+        ),
         Sequelize.where(
           Sequelize.cast(Sequelize.col('Book.publication_year'), 'varchar'),
           { [Op.like]: `%${search}%` }
@@ -144,24 +143,24 @@ const updateBook = async (req, book, t) => {
     genres,
     genre_names
   } = req.body
+  const { user_id, file } = req
 
   const bookUpdated = await book.update({
-    title: title,
-    author: author,
-    publisher: publisher,
-    isbn: isbn,
-    publication_year: parseInt(publication_year),
-    publication_date: publication_date,
-    number_of_pages: parseInt(number_of_pages),
-    synopsis: synopsis,
-    created_at: new Date(),
+    title: title || book.title,
+    author: author || book.author,
+    publisher: publisher || book.publisher,
+    isbn: isbn || book.isbn,
+    publication_year: parseInt(publication_year) || book.publication_year,
+    publication_date: publication_date || book.publication_date,
+    number_of_pages: parseInt(number_of_pages) || book.number_of_pages,
+    synopsis: synopsis || book.synopsis,
     updated_at: new Date(),
-    created_by: req.user_id,
-    updated_by: req.user_id
-  })
+    created_by: user_id || book.created_by,
+    updated_by: user_id || book.updated_by
+  }, { transaction: t })
 
-  if (req.file) {
-    bookUpdated.cover_url = req.file.publicUrl
+  if (file) {
+    bookUpdated.cover_url = file.publicUrl
     await book.save({ transaction: t })
   }
 
