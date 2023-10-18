@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
       })
     }
 
-    async assignRole(name) {
+    async assignRole(name, t = null) {
       const roleNames = Array.isArray(name) ? name : [name]
 
       const roles = await sequelize.models.Role.findAll({
@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
 
       if (!roles.length > 0) throwNewError(400, 'Oops! Role not found')
 
-      await this.setRoles(roles)
+      await this.setRoles(roles, { transaction: t })
     }
   }
 

@@ -6,7 +6,9 @@ const { sequelize } = require('../../../models/index')
 const store = async (req, res) => {
   const t = await sequelize.transaction()
   try {
-    const user = await RegisterService.createNewUser(req, t)
+    const userCreated = await RegisterService.createNewUser(req, t)
+    await t.commit()
+    const user = await RegisterService.findUserById(userCreated.id)
 
     return response.success(
       res,

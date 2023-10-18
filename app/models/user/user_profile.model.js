@@ -3,9 +3,17 @@ const { Model, DataTypes } = require('sequelize')
 module.exports = (sequelize) => {
   class UserProfile extends Model {
     static associate(models) {
-      // BelongsTo Relationship
+      // BelongsTo Relationships
       this.belongsTo(models.User, {
         foreignKey: 'user_id'
+      })
+
+      this.belongsTo(models.Province, {
+        foreignKey: 'province_id'
+      })
+
+      this.belongsTo(models.City, {
+        foreignKey: 'city_id'
       })
     }
   }
@@ -58,6 +66,26 @@ module.exports = (sequelize) => {
             msg: 'Avatar must be a valid URL'
           }
         }
+      },
+      province_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: 'location_provinces',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
+      },
+      city_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: 'location_cities',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
       },
       created_at: {
         type: DataTypes.DATE,

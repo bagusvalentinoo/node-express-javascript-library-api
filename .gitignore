@@ -1,3 +1,5 @@
 /vscode
+.idea
 /node_modules
 .env
+/app/config/firebase_storage.config.json
