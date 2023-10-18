@@ -1,6 +1,6 @@
-const response = require('../../../utils/response.util')
+const response = require('../../../../utils/response.util')
 const bcrypt = require('bcrypt')
-const { User, Role, UserProfile, Province, City } = require('../../../models/index')
+const { User, Role, UserProfile, Province, City } = require('../../../../models')
 
 const createNewUser = async (req, t) => {
   const { name, username, email, password } = req.body

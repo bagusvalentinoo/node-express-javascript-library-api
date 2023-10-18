@@ -1,7 +1,7 @@
-const response = require('../../../utils/response.util')
+const response = require('../../../../utils/response.util')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const { Op, User } = require('../../../models/index')
+const { Op, User } = require('../../../../models')
 require('dotenv').config()
 
 const checkLoginCredentials = async (req) => {

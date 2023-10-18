@@ -1,7 +1,7 @@
 const RegisterResource = require('../resources/register.resource')
-const response = require('../../../utils/response.util')
+const response = require('../../../../utils/response.util')
 const RegisterService = require('../services/register.service')
-const { sequelize } = require('../../../models/index')
+const { sequelize } = require('../../../../models')
 
 const store = async (req, res) => {
   const t = await sequelize.transaction()

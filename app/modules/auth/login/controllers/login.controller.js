@@ -1,4 +1,4 @@
-const response = require('../../../utils/response.util')
+const response = require('../../../../utils/response.util')
 const LoginService = require('../services/login.service')
 
 const login = async (req, res) => {
