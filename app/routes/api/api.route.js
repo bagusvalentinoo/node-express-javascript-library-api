@@ -6,6 +6,7 @@ const publicGenreRoute = require('../../modules/public/genre/routes/genre.route'
 const publicBookRoute = require('../../modules/public/book/routes/book.route')
 const officerGenreRoute = require('../../modules/officer/genre/routes/genre.route')
 const officerBookRoute = require('../../modules/officer/book/routes/book.route')
+const officerMemberRoute = require('../../modules/officer/member/routes/member.route')
 
 router.use('/auth', loginRoute)
 router.use('/auth', registerRoute)
@@ -13,5 +14,6 @@ router.use('/genres', publicGenreRoute)
 router.use('/books', publicBookRoute)
 router.use('/officer/genres', officerGenreRoute)
 router.use('/officer/books', officerBookRoute)
+router.use('/officer/members', officerMemberRoute)
 
 module.exports = router

@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
         onDelete: 'RESTRICT'
       },
       gender: {
-        type: DataTypes.ENUM('L', 'P'),
+        type: DataTypes.ENUM('Male', 'Female'),
         allowNull: true,
         validate: {
           isIn: {
