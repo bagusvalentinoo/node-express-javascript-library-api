@@ -1,4 +1,4 @@
-const { convertToFormatDate } = require('../../../../utils/string.util')
+const { convertToFormatDate, convertTimeStampToFormatDate } = require('../../../../utils/string.util')
 
 class MemberResource {
   constructBirthPlaceAndDate() {
@@ -19,6 +19,7 @@ class MemberResource {
     this.birth_place = data.UserProfile ? data.UserProfile.birth_place : null
     this.birth_date = data.UserProfile ? convertToFormatDate(data.UserProfile.birth_date) : null
     this.birth_place_and_date = this.constructBirthPlaceAndDate()
+    this.join_date = convertTimeStampToFormatDate(data.created_at) || null
     this.avatar_url = data.UserProfile ? data.UserProfile.avatar_url : null
     this.province = data.UserProfile && data.UserProfile.Province ? data.UserProfile.Province.name : null
     this.city = data.UserProfile && data.UserProfile.City ? data.UserProfile.City.name : null

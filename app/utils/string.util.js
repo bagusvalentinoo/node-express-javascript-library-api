@@ -26,6 +26,25 @@ const convertToFormatDate = (inputDate) => {
   return `${day} ${month} ${year}`
 }
 
+const convertTimeStampToFormatDate = (timestamp) => {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'Oktober', 'November', 'December'
+  ]
+
+  const days = [
+    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+  ]
+
+  const dateObj = new Date(timestamp)
+  const day = days[dateObj.getUTCDay()]
+  const date = dateObj.getUTCDate()
+  const month = months[dateObj.getUTCMonth()]
+  const year = dateObj.getUTCFullYear()
+
+  return `${day}, ${date} ${month} ${year}`
+}
+
 const convertToDefaultFormatDate = (dateString) => {
   if (!dateString) return ''
 
@@ -89,6 +108,7 @@ module.exports = {
   convertToUpperCase,
   convertToLowerCase,
   convertToFormatDate,
+  convertTimeStampToFormatDate,
   convertToDefaultFormatDate,
   generateUuidV4,
   generateUsernameFromName,
