@@ -42,7 +42,7 @@ const getMembers = async (req) => {
       },
       {
         model: UserProfile,
-        attributes: ['id', 'gender', 'address', 'birth_place', 'birth_date', 'avatar'],
+        attributes: ['id', 'gender', 'address', 'birth_place', 'birth_date', 'avatar_url'],
         include: [
           {
             model: Province,

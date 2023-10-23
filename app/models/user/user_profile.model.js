@@ -58,7 +58,7 @@ module.exports = (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true
       },
-      avatar: {
+      avatar_url: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {

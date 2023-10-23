@@ -83,6 +83,7 @@ const createBook = async (req, t) => {
     genres,
     genre_names
   } = req.body
+  const { user_id, file } = req
 
   const book = await Book.create({
     title: title,
@@ -93,11 +94,11 @@ const createBook = async (req, t) => {
     publication_date: publication_date,
     number_of_pages: parseInt(number_of_pages),
     synopsis: synopsis,
-    cover_url: req.file.publicUrl ?? null,
+    cover_url: file ? file.publicUrl : null,
     created_at: new Date(),
     updated_at: new Date(),
-    created_by: req.user_id,
-    updated_by: req.user_id
+    created_by: user_id,
+    updated_by: user_id
   }, { transaction: t })
 
   if (genres) await book.setGenres(genres, { transaction: t })

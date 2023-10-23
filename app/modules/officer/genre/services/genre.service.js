@@ -70,7 +70,7 @@ const createGenre = async (req, t) => {
     name: name,
     description: description,
     status: status,
-    icon_url: file.publicUrl ?? null,
+    icon_url: file ? file.publicUrl : null,
     created_at: new Date(),
     updated_at: new Date(),
     created_by: user_id,

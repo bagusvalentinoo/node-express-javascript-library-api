@@ -3,7 +3,9 @@ const bcrypt = require('bcrypt')
 const { User, Role, UserProfile, Province, City } = require('../../../../models')
 
 const createNewUser = async (req, t) => {
-  const { name, username, email, password } = req.body
+  const { name, username, email, password, password_confirmation } = req.body
+
+  if (password !== password_confirmation) response.throwNewError(400, 'Oops! Password confirmation does not match')
 
   const newUser = await User.create({
     name: name,

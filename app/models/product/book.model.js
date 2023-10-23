@@ -174,6 +174,7 @@ module.exports = (sequelize) => {
       cover_url: {
         type: DataTypes.TEXT,
         allowNull: true,
+        defaultValue: null,
         validate: {
           isUrl: {
             msg: 'Oops! Cover URL must be a valid URL'
