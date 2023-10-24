@@ -1,3 +1,5 @@
+const GenreBookResource = require('./genre_book.resource')
+
 class GenreResource {
   constructor(data) {
     this.id = data.id
@@ -5,7 +7,7 @@ class GenreResource {
     this.description = data.description
     this.icon_url = data.icon_url
     this.book_count = data.dataValues.book_count
-    this.books = data.Books ? data.Books : []
+    this.books = data.Books ? GenreBookResource.collection(data.Books) : []
   }
 
   static collection(dataResource) {
