@@ -2,6 +2,7 @@ const MemberResource = require('../resources/member.resource')
 const response = require('../../../../utils/response.util')
 const bcrypt = require('bcrypt')
 const WelcomeEmailTemplate = require('../../../../email/templates/welcome.template')
+const ThankyouEmailTemplate = require('../../../../email/templates/thank_you.template')
 const {
   convertToDefaultFormatDate,
   generateUsernameFromName,
@@ -219,16 +220,17 @@ const deleteMembers = async (ids, t) => {
         user_id: member.id
       }
     }, { transaction: t })
+
+    await member.destroy({ transaction: t })
+
+    await emailQueue.add({
+      to: member.email,
+      subject: 'Thank You for Using Our Platform',
+      html: ThankyouEmailTemplate(member.name)
+    })
   }
 
-  return await User.destroy({
-    where: {
-      id: {
-        [Op.in]: ids
-      }
-    },
-    individualHooks: true
-  }, { transaction: t })
+  return members
 }
 
 module.exports = {

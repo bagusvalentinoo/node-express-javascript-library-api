@@ -105,8 +105,12 @@ const createBook = async (req, t) => {
   if (genre_names) {
     for (const genreName of genre_names) {
       const genre = await Genre.findOrCreate({
-        where: {
-          name: genreName
+        where: { name: genreName },
+        defaults: {
+          created_at: new Date(),
+          updated_at: new Date(),
+          created_by: user_id,
+          updated_by: user_id
         }
       })
 
@@ -169,8 +173,12 @@ const updateBook = async (req, book, t) => {
 
     for (const genreName of genre_names) {
       const genre = await Genre.findOrCreate({
-        where: {
-          name: genreName
+        where: { name: genreName },
+        defaults: {
+          created_at: new Date(),
+          updated_at: new Date(),
+          created_by: user_id,
+          updated_by: user_id
         }
       })
 

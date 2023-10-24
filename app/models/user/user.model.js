@@ -1,7 +1,5 @@
 const { Model, DataTypes } = require('sequelize')
 const { throwNewError } = require('../../utils/response.util')
-const { emailQueue } = require('../../email/queue/email.queue')
-const ThankyouEmailTemplate = require('../../email/templates/thank_you.template')
 
 module.exports = (sequelize) => {
   class User extends Model {
@@ -152,14 +150,6 @@ module.exports = (sequelize) => {
       updatedAt: 'updated_at'
     }
   )
-
-  User.afterDestroy(async (user, options) => {
-    await emailQueue.add({
-      to: user.email,
-      subject: 'Thank You for Using Our Platform',
-      html: ThankyouEmailTemplate(user.name)
-    })
-  })
 
   return User
 }

@@ -7,6 +7,6 @@ const { addCitiesForStartingSeeder } = require('./location/city.seeder')
 exports.seed = async () => {
   await addRolesForStartingSeeder()
   await addUsersAndAssignTheirRolesForStartingSeeder()
-  await addProvincesForStartingSeeder()
-  await addCitiesForStartingSeeder()
+  // await addProvincesForStartingSeeder()
+  // await addCitiesForStartingSeeder()
 }
