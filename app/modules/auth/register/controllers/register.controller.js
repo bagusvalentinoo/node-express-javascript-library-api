@@ -13,7 +13,7 @@ const store = async (req, res) => {
     return response.success(
       res,
       201,
-      'Data Successfully Created',
+      'User Successfully Registered',
       new RegisterResource(user),
       'user'
     )

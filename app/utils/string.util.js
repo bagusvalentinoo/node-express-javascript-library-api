@@ -79,7 +79,7 @@ const generateRandomCharacter = (length) => {
 }
 
 const generateUsernameFromName = (name) => {
-  return name.trim().replace(/\s+/g, '_').toLowerCase() + generateRandomCharacter(5)
+  return name.trim().replace(/\s+/g, '_').toLowerCase() + '_' + generateRandomCharacter(5)
 }
 
 const generateRandomPassword = (length) => {
