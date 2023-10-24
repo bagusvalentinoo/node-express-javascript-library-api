@@ -35,16 +35,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: false,
         unique: {
-          args: true,
           msg: 'Oops! Title already exist'
         },
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Title cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Title cannot be empty'
           },
           len: {
@@ -58,11 +55,9 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Author cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Author cannot be empty'
           }
         }
@@ -72,11 +67,9 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Publisher cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Publisher cannot be empty'
           }
         }
@@ -85,16 +78,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(20),
         allowNull: false,
         unique: {
-          args: true,
           msg: 'Oops! ISBN already exist'
         },
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! ISBN cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! ISBN cannot be empty'
           }
         }
@@ -104,15 +94,12 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Publication year cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Publication year cannot be empty'
           },
           isNumeric: {
-            args: true,
             msg: 'Oops! Publication year is not valid'
           }
         }
@@ -122,15 +109,12 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Publication date cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Publication date cannot be empty'
           },
           isDate: {
-            args: true,
             msg: 'Oops! Publication date is not valid'
           }
         }
@@ -140,15 +124,12 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Number of pages cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Number of pages cannot be empty'
           },
           isNumeric: {
-            args: true,
             msg: 'Oops! Number of pages is not valid'
           }
         }
@@ -158,16 +139,30 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            args: true,
             msg: 'Oops! Synopsis cannot be empty'
           },
           notEmpty: {
-            args: true,
             msg: 'Oops! Synopsis cannot be empty'
           },
           len: {
             args: [10, 1500],
             msg: 'Oops! Synopsis length between 10 or 1500 characters'
+          }
+        }
+      },
+      stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+          notNull: {
+            msg: 'Oops! Stock cannot be empty'
+          },
+          notEmpty: {
+            msg: 'Oops! Stock cannot be empty'
+          },
+          isNumeric: {
+            msg: 'Oops! Stock is not valid'
           }
         }
       },

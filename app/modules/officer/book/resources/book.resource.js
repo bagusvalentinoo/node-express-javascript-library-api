@@ -8,8 +8,10 @@ class BookResource {
     this.publication_year = data.publication_year
     this.publication_date = data.publication_date
     this.number_of_pages = data.number_of_pages
-    this.synopsis = data.synopsis
+    this.stock = data.stock
+    this.status = data.stock > 0 ? 'Available': 'Out of stock'
     this.cover_url = data.cover_url
+    this.synopsis = data.synopsis
     this.genres = data.Genres ? data.Genres.map((genre) => { return genre.name }) : []
   }
 

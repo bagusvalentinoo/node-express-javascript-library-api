@@ -17,7 +17,8 @@ const getBooks = async (req) => {
       through: { attributes: [] },
       attributes: ['id', 'name']
     },
-    distinct: true
+    distinct: true,
+    subQuery: false
   }
 
   if (search) {
@@ -43,6 +44,11 @@ const getBooks = async (req) => {
             [Op.like]: `%${search}%`
           }
         },
+        {
+          synopsis: {
+            [Op.like]: `%${search}%`
+          }
+        },
         Sequelize.where(
           Sequelize.cast(Sequelize.col('Book.publication_date'), 'varchar'),
           { [Op.like]: `%${search}%` }
@@ -54,7 +60,16 @@ const getBooks = async (req) => {
         Sequelize.where(
           Sequelize.cast(Sequelize.col('Book.number_of_pages'), 'varchar'),
           { [Op.like]: `%${search}%` }
-        )
+        ),
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('Book.stock'), 'varchar'),
+          { [Op.like]: `%${search}%` }
+        ),
+        {
+          '$Genres.name$': {
+            [Op.like]: `%${search}%`
+          }
+        }
       ]
     }
   }
@@ -80,6 +95,7 @@ const createBook = async (req, t) => {
     publication_date,
     number_of_pages,
     synopsis,
+    stock,
     genres,
     genre_names
   } = req.body
@@ -93,8 +109,9 @@ const createBook = async (req, t) => {
     publication_year: parseInt(publication_year),
     publication_date: publication_date,
     number_of_pages: parseInt(number_of_pages),
-    synopsis: synopsis,
+    stock: stock,
     cover_url: file ? file.publicUrl : null,
+    synopsis: synopsis,
     created_at: new Date(),
     updated_at: new Date(),
     created_by: user_id,
@@ -142,6 +159,7 @@ const updateBook = async (req, book, t) => {
     publication_year,
     publication_date,
     number_of_pages,
+    stock,
     synopsis,
     genres,
     genre_names
@@ -156,6 +174,7 @@ const updateBook = async (req, book, t) => {
     publication_year: parseInt(publication_year) || book.publication_year,
     publication_date: publication_date || book.publication_date,
     number_of_pages: parseInt(number_of_pages) || book.number_of_pages,
+    stock: stock || book.stock,
     synopsis: synopsis || book.synopsis,
     updated_at: new Date(),
     created_by: user_id || book.created_by,
