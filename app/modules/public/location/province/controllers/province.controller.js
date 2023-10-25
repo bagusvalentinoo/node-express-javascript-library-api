@@ -20,16 +20,14 @@ const index = async (req, res) => {
 
 const show = async (req, res) => {
   try {
-    const { province, otherProvinces } = await ProvinceService.findProvinceById(req.params.param)
+    const province = await ProvinceService.findProvinceById(req.params.param)
 
     return response.success(
       res,
       200,
       'Data Successfully Loaded',
-      {
-        province: new ProvinceResource(province),
-        other_provinces: otherProvinces
-      }
+      new ProvinceResource(province),
+      'province'
     )
   } catch (error) {
     return response.failed(res, error.status_code ?? 500, error)
