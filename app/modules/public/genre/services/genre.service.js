@@ -17,12 +17,12 @@ const getGenres = async (req) => {
       'description',
       'icon_url',
       [
-        Sequelize.literal(`(
+        Sequelize.literal(`CAST((
             SELECT COUNT(*)
             FROM "book_genre" AS "BookGenre"
             INNER JOIN "books" AS "Book" ON "Book"."id" = "BookGenre"."book_id"
             WHERE "BookGenre"."genre_id" = "Genre"."id"
-          )`),
+          ) AS INTEGER)`),
         'book_count'
       ]
     ]
@@ -44,12 +44,12 @@ const findGenreById = async (id) => {
     'description',
     'icon_url',
     [
-      Sequelize.literal(`(
+      Sequelize.literal(`CAST((
             SELECT COUNT(*)
             FROM "book_genre" AS "BookGenre"
             INNER JOIN "books" AS "Book" ON "Book"."id" = "BookGenre"."book_id"
             WHERE "BookGenre"."genre_id" = "Genre"."id"
-          )`),
+          ) AS INTEGER)`),
       'book_count'
     ]
   ]
