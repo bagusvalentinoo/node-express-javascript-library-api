@@ -54,6 +54,27 @@ const show = async (req, res) => {
   }
 }
 
+const update = async (req, res) => {
+  const t = await sequelize.transaction()
+  try {
+    const findMember = await MemberService.findMemberById(req.params.param)
+    const memberUpdated = await MemberService.updateStatusMember(req, findMember, t)
+    await t.commit()
+    const member = await MemberService.findMemberById(memberUpdated.id)
+
+    return response.success(
+      res,
+      200,
+      'Data Successfully Updated',
+      new MemberResource(member),
+      'member'
+    )
+  } catch (error) {
+    if (t) await t.rollback()
+    return response.failed(res, error.status_code ?? 500, error)
+  }
+}
+
 const destroy = async (req, res) => {
   const t = await sequelize.transaction()
   try {
@@ -75,5 +96,6 @@ module.exports = {
   index,
   store,
   show,
+  update,
   destroy
 }

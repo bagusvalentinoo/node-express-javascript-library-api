@@ -11,20 +11,20 @@ class MemberResource {
 
   constructor(data) {
     this.id = data.id
-    this.name = data.name
-    this.username = data.username
-    this.email = data.email
-    this.gender = data.Member ? data.Member.gender : null
-    this.address = data.Member ? data.Member.address : null
-    this.birth_place = data.Member ? data.Member.birth_place : null
-    this.birth_date = data.Member ? convertToFormatDate(data.Member.birth_date) : null
+    this.name = data.User ? data.User.name : null
+    this.username = data.User ? data.User.username : null
+    this.email = data.User ? data.User.email : null
+    this.gender = data.gender
+    this.address = data.address
+    this.birth_place = data.birth_place
+    this.birth_date = convertToFormatDate(data.birth_date)
     this.birth_place_and_date = this.constructBirthPlaceAndDate()
     this.join_date = convertTimeStampToFormatDate(data.created_at) || null
-    this.status = data.Member ? data.Member.status : null
-    this.avatar_url = data.Member ? data.Member.avatar_url : null
-    this.province = data.Member && data.Member.Province ? data.Member.Province.name : null
-    this.city = data.Member && data.Member.City ? data.Member.City.name : null
-    this.roles = data.Roles ? data.Roles.map(role => role.name) : []
+    this.status = data.status
+    this.avatar_url = data.avatar_url
+    this.province = data.Province ? data.Province.name : null
+    this.city = data.City ? data.City.name : null
+    this.roles = data.User && data.User.Roles ? data.User.Roles.map((role) => role.name) : []
   }
 
   static collection(dataResource) {

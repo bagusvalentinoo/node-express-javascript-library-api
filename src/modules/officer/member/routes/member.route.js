@@ -17,6 +17,10 @@ router.get('/:param', ApiKey, Auth, isOfficer, async (req, res) => {
   await MemberController.show(req, res)
 })
 
+router.put('/:param', ApiKey, Auth, isOfficer, async (req, res) => {
+  await MemberController.update(req, res)
+})
+
 router.delete('/', ApiKey, Auth, isOfficer, async (req, res) => {
   await MemberController.destroy(req, res)
 })

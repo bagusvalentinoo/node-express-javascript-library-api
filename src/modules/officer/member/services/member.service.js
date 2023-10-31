@@ -31,29 +31,26 @@ const getMembers = async (req) => {
     limit: limit,
     offset: offset,
     order: sortBy,
-    attributes: ['id', 'name', 'username', 'email', 'created_at', 'updated_at'],
     distinct: true,
     subQuery: false,
     include: [
       {
-        model: Role,
-        through: { attributes: [] },
-        attributes: ['id', 'name'],
-        where: { name: 'Member' }
+        model: User,
+        attributes: ['id', 'name', 'username', 'email'],
+        include: {
+          model: Role,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+          where: { name: 'Member' }
+        }
       },
       {
-        model: Member,
-        attributes: ['id', 'gender', 'address', 'birth_place', 'birth_date', 'status', 'avatar_url'],
-        include: [
-          {
-            model: Province,
-            attributes: ['id', 'name']
-          },
-          {
-            model: City,
-            attributes: ['id', 'name']
-          }
-        ]
+        model: Province,
+        attributes: ['id', 'name']
+      },
+      {
+        model: City,
+        attributes: ['id', 'name']
       }
     ]
   }
@@ -62,55 +59,54 @@ const getMembers = async (req) => {
     responsePayloadMember.where = {
       [Op.or]: [
         {
-          name: {
+          '$User.name$': {
             [Op.like]: `%${search}%`
           }
         },
         {
-          username: {
+          '$User.username$': {
             [Op.like]: `%${search}%`
           }
         },
         {
-          email: {
+          '$User.email$': {
             [Op.like]: `%${search}%`
           }
         },
         Sequelize.where(
-          Sequelize.cast(Sequelize.col('Member.gender'), 'varchar'),
-          { [Op.like]: `%${search}%` }
+          Sequelize.cast(Sequelize.col('gender'), 'varchar'),
+          { [Op.eq]: search }
         ),
         {
-          '$Member.address$': {
+          address: {
             [Op.like]: `%${search}%`
           }
         },
         {
-          '$Member.birth_place$': {
+          birth_place: {
             [Op.like]: `%${search}%`
           }
         },
         Sequelize.where(
-          Sequelize.cast(Sequelize.col('Member.birth_date'), 'varchar'),
+          Sequelize.cast(Sequelize.col('birth_date'), 'varchar'),
           { [Op.like]: `%${convertToDefaultFormatDate(search)}%` }
         ),
+        Sequelize.where(
+          Sequelize.cast(Sequelize.col('status'), 'varchar'),
+          { [Op.eq]: search }
+        ),
         {
-          '$Member.status$': {
-            [Op.like]: `%${search}%`
-          }
-        },
-        {
-          '$Member.Province.name$': {
+          '$Province.name$': {
             [Op.iLike]: `%${search}%`
           }
         },
         {
-          '$Member.City.name$': {
+          '$City.name$': {
             [Op.iLike]: `%${search}%`
           }
         },
         {
-          '$Roles.name$': {
+          '$User.Roles.name$': {
             [Op.iLike]: `%${search}%`
           }
         }
@@ -118,7 +114,7 @@ const getMembers = async (req) => {
     }
   }
 
-  const members = await User.findAndCountAll(responsePayloadMember)
+  const members = await Member.findAndCountAll(responsePayloadMember)
 
   return response.paginate(
     members,
@@ -168,33 +164,37 @@ const createMember = async (req, t) => {
 }
 
 const findMemberById = async (id) => {
-  const member = await User.findByPk(id, {
+  const member = await Member.findByPk(id, {
     include: [
       {
-        model: Role,
-        through: { attributes: [] },
+        model: User,
+        attributes: ['id', 'name', 'username', 'email'],
+        include: {
+          model: Role,
+          through: { attributes: [] },
+          attributes: ['id', 'name'],
+          where: { name: 'Member' }
+        }
+      },
+      {
+        model: Province,
         attributes: ['id', 'name']
       },
       {
-        model: Member,
-        attributes: {
-          exclude: ['created_at', 'updated_at']
-        },
-        include: [
-          {
-            model: Province,
-            attributes: ['id', 'name']
-          },
-          {
-            model: City,
-            attributes: ['id', 'name']
-          }
-        ]
+        model: City,
+        attributes: ['id', 'name']
       }
     ]
   })
 
   return member ? member : response.throwNewError(400, 'Oops! Member not found')
+}
+
+const updateStatusMember = async (req, member, t) => {
+  return await member.update({
+    status: req.body.status || member.status,
+    updated_at: new Date()
+  }, { transaction: t })
 }
 
 const deleteMembers = async (ids, t) => {
@@ -243,5 +243,6 @@ module.exports = {
   getMembers,
   createMember,
   findMemberById,
+  updateStatusMember,
   deleteMembers
 }
