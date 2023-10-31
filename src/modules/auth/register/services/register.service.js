@@ -16,6 +16,7 @@ const createNewUser = async (req, t) => {
     updated_at: new Date()
   }, { transaction: t })
   await newUser.createMember({
+    status: 'ACTIVE',
     created_at: new Date(),
     updated_at: new Date()
   }, { transaction: t })

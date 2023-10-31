@@ -43,7 +43,7 @@ const getMembers = async (req) => {
       },
       {
         model: Member,
-        attributes: ['id', 'gender', 'address', 'birth_place', 'birth_date', 'avatar_url'],
+        attributes: ['id', 'gender', 'address', 'birth_place', 'birth_date', 'status', 'avatar_url'],
         include: [
           {
             model: Province,
@@ -94,6 +94,11 @@ const getMembers = async (req) => {
           Sequelize.cast(Sequelize.col('Member.birth_date'), 'varchar'),
           { [Op.like]: `%${convertToDefaultFormatDate(search)}%` }
         ),
+        {
+          '$Member.status$': {
+            [Op.like]: `%${search}%`
+          }
+        },
         {
           '$Member.Province.name$': {
             [Op.iLike]: `%${search}%`
@@ -147,6 +152,7 @@ const createMember = async (req, t) => {
     updated_at: new Date()
   }, { transaction: t })
   await newMember.createMember({
+    status: 'ACTIVE',
     created_at: new Date(),
     updated_at: new Date()
   }, { transaction: t })

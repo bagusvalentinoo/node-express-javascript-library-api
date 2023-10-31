@@ -58,6 +58,23 @@ module.exports = (sequelize) => {
         type: DataTypes.DATEONLY,
         allowNull: true
       },
+      status: {
+        type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'BLOCKED'),
+        allowNull: false,
+        defaultValue: 'ACTIVE',
+        validate: {
+          notEmpty: {
+            msg: 'Oops! Status cannot be empty'
+          },
+          notNull: {
+            msg: 'Oops! Status cannot be null'
+          },
+          isIn: {
+            args: [['ACTIVE', 'INACTIVE', 'BLOCKED']],
+            msg: 'Oops! Status must be either ACTIVE, INACTIVE, or BLOCKED'
+          }
+        }
+      },
       avatar_url: {
         type: DataTypes.TEXT,
         allowNull: true,

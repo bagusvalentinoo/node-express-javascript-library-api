@@ -20,6 +20,7 @@ class MemberResource {
     this.birth_date = data.Member ? convertToFormatDate(data.Member.birth_date) : null
     this.birth_place_and_date = this.constructBirthPlaceAndDate()
     this.join_date = convertTimeStampToFormatDate(data.created_at) || null
+    this.status = data.Member ? data.Member.status : null
     this.avatar_url = data.Member ? data.Member.avatar_url : null
     this.province = data.Member && data.Member.Province ? data.Member.Province.name : null
     this.city = data.Member && data.Member.City ? data.Member.City.name : null
