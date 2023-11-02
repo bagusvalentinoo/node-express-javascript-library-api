@@ -166,6 +166,23 @@ module.exports = (sequelize) => {
           }
         }
       },
+      status: {
+        type: DataTypes.ENUM('AVAILABLE', 'OUT_OF_STOCK'),
+        allowNull: false,
+        defaultValue: 'AVAILABLE',
+        validate: {
+          notNull: {
+            msg: 'Oops! Status cannot be empty'
+          },
+          notEmpty: {
+            msg: 'Oops! Status cannot be empty'
+          },
+          isIn: {
+            args: [['AVAILABLE', 'OUT_OF_STOCK']],
+            msg: 'Oops! Status is not valid'
+          }
+        }
+      },
       cover_url: {
         type: DataTypes.TEXT,
         allowNull: true,
