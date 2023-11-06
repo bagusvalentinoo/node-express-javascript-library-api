@@ -30,6 +30,26 @@ module.exports = (sequelize) => {
         as: 'updatedBooks'
       })
 
+      this.hasMany(models.Bookshelf, {
+        foreignKey: 'created_by',
+        as: 'createdBookshelves'
+      })
+
+      this.hasMany(models.Bookshelf, {
+        foreignKey: 'updated_by',
+        as: 'updatedBookshelves'
+      })
+
+      this.hasMany(models.BookLocation, {
+        foreignKey: 'created_by',
+        as: 'createdBookLocations'
+      })
+
+      this.hasMany(models.BookLocation, {
+        foreignKey: 'updated_by',
+        as: 'updatedBookLocations'
+      })
+
       // BelongsToMany Relationship
       this.belongsToMany(models.Role, {
         through: models.UserRole,

@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const path = require('path')
 const model = require('./src/models/index')
-const { seed } = require('./src/seeders/seed')
 const apiRoute = require('./src/routes/api/api.route')
 require('dotenv').config()
 
@@ -36,8 +35,6 @@ const port = process.env.APP_PORT || 8080
 
 app.listen(port, () => {
   // model.sequelize.sync({ alter: true })
-
-  // seed()
 
   console.log(`Server is running on http://localhost:${port}`)
 })
