@@ -1,7 +1,7 @@
 const response = require('../../../../utils/response.util')
-const BookResource = require('../resources/book.resource')
+const BookListResource = require('../resources/book_list.resource')
 const { orderBy } = require('../../../../utils/query.util')
-const { Sequelize, Op, Book, Genre, BookGenre } = require('../../../../models/index')
+const { Sequelize, Op, Book, BookLocation, Bookshelf, Genre, BookGenre } = require('../../../../models/index')
 
 const getBooks = async (req) => {
   const sortBy = orderBy(req.query)
@@ -81,7 +81,7 @@ const getBooks = async (req) => {
     req.query.page,
     limit,
     'books',
-    BookResource.collection(books.rows, 1)
+    BookListResource.collection(books.rows, 1)
   )
 }
 
@@ -97,6 +97,7 @@ const createBook = async (req, t) => {
     synopsis,
     stock,
     genres,
+    bookshelves,
     genre_names
   } = req.body
   const { user_id, file } = req
@@ -135,16 +136,45 @@ const createBook = async (req, t) => {
     }
   }
 
+  if (bookshelves) {
+    for (const bookshelf of bookshelves) {
+      const isBookshelfExist = await Bookshelf.findByPk(bookshelf.bookshelf_id)
+      if (!isBookshelfExist) response.throwNewError(400, 'Oops! Bookshelf not found')
+
+      await book.createBookLocation({
+        bookshelf_id: bookshelf.bookshelf_id,
+        row: bookshelf.row,
+        column: bookshelf.column,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by: user_id,
+        updated_by: user_id
+      }, { transaction: t })
+    }
+  }
+
   return book
 }
 
 const findBookById = async (id) => {
   const book = await Book.findByPk(id, {
-    include: {
-      model: Genre,
-      through: { attributes: [] },
-      attributes: ['id', 'name']
-    }
+    include: [
+      {
+        model: Genre,
+        through: { attributes: [] },
+        attributes: ['id', 'name']
+      },
+      {
+        model: BookLocation,
+        attributes: {
+          exclude: ['book_id', 'bookshelf_id', 'created_at', 'updated_at', 'created_by', 'updated_by']
+        },
+        include: {
+          model: Bookshelf,
+          attributes: ['id', 'name', 'code']
+        }
+      }
+    ]
   })
 
   return book ? book : response.throwNewError(400, 'Oops! Book not found')
@@ -162,6 +192,7 @@ const updateBook = async (req, book, t) => {
     stock,
     synopsis,
     genres,
+    bookshelves,
     genre_names
   } = req.body
   const { user_id, file } = req
@@ -207,6 +238,29 @@ const updateBook = async (req, book, t) => {
     await bookUpdated.setGenres(genreIds, { transaction: t })
   }
 
+  if (bookshelves) {
+    await BookLocation.destroy({
+      where: {
+        book_id: bookUpdated.id
+      }
+    }, { transaction: t })
+
+    for (const bookshelf of bookshelves) {
+      const isBookshelfExist = await Bookshelf.findByPk(bookshelf.bookshelf_id)
+      if (!isBookshelfExist) response.throwNewError(400, 'Oops! Bookshelf not found')
+
+      await bookUpdated.createBookLocation({
+        bookshelf_id: bookshelf.bookshelf_id,
+        row: bookshelf.row,
+        column: bookshelf.column,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by: user_id,
+        updated_by: user_id
+      }, { transaction: t })
+    }
+  }
+
   return bookUpdated
 }
 
@@ -223,6 +277,12 @@ const deleteBooks = async (ids, t) => {
 
   for (const book of books) {
     await BookGenre.destroy({
+      where: {
+        book_id: book.id
+      }
+    }, { transaction: t })
+
+    await BookLocation.destroy({
       where: {
         book_id: book.id
       }

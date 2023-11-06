@@ -1,6 +1,4 @@
-const BookBookshelfResource = require('./book_bookshelf.resource')
-
-class BookResource {
+class BookListResource {
   constructor(data) {
     this.id = data.id
     this.title = data.title
@@ -15,8 +13,11 @@ class BookResource {
     this.cover_url = data.cover_url
     this.synopsis = data.synopsis
     this.genres = data.Genres ? data.Genres.map((genre) => { return genre.name }) : []
-    this.book_locations = data.BookLocations ? BookBookshelfResource.collection(data.BookLocations) : []
+  }
+
+  static collection(dataResource) {
+    return dataResource.map((data) => new BookListResource(data))
   }
 }
 
-module.exports = BookResource
+module.exports = BookListResource
